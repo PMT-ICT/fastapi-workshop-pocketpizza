@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from pocketpizza import schemas, security
-from pocketpizza.repositories import user as u
+from pocketpizza.dependencies import repository as repo
 
-router = APIRouter()
+router = APIRouter(tags=["user"])
 
 
 @router.post("/login/access-token", response_model=schemas.Token)
 def login_access_token(
-    user_repository: u.UserRepositoryDependency,
+    user_repository: repo.UserRepositoryDependency,
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """

@@ -1,11 +1,12 @@
 from typing import Annotated
 from fastapi import Depends
 
-from pocketpizza import model, security, database
+from pocketpizza import model, security
+from pocketpizza.dependencies import db
 
 
 class UserRepository:
-    def __init__(self, session: database.DatabaseSession):
+    def __init__(self, session: db.DatabaseSession):
         self._session = session
 
     def get_user(self, user_id: int):
@@ -16,11 +17,7 @@ class UserRepository:
         )
 
     def get_user_by_email(self, email: str):
-        return (
-            self._session.query(model.User)
-            .filter(model.User.email == email)
-            .first()
-        )
+        return self._session.query(model.User).filter(model.User.email == email).first()
 
     def get_users(self, skip: int = 0, limit: int = 100):
         return self._session.query(model.User).offset(skip).limit(limit).all()
@@ -42,4 +39,3 @@ class UserRepository:
         return user
 
 
-UserRepositoryDependency = Annotated[UserRepository, Depends(UserRepository)]

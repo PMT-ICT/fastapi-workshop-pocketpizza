@@ -1,16 +1,7 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from pocketpizza import database
-from pocketpizza.api import order, pizza, user
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    database.create()
-    database.seed()
-
-    yield
+from pocketpizza.api import order, pizza
+from pocketpizza.lifespan import lifespan
 
 
 app = FastAPI(lifespan=lifespan)

@@ -1,27 +1,34 @@
 from fastapi import APIRouter, HTTPException
 
 from pocketpizza import deps
-from pocketpizza.schemas import Order
+from pocketpizza.schemas import CreateOrder, Order
 
-from pocketpizza.repositories import order
+from pocketpizza.dependencies import repository as repo
 
-router = APIRouter()
+router = APIRouter(tags=["order"])
 
 
 @router.get("/order")
 def get_orders(
-    order_repository: order.OrderRepository,
-    current_user: deps.CurrentUser,
-    all_users=False,
+    order_repository: repo.OrderRepositoryDependency, user_id: int | None = None
 ) -> list[Order]:
-    return order_repository.get_orders(current_user.user_id if not all_users else None)
+    return order_repository.get_orders(user_id)
 
 
 @router.get("/order/{order_id}")
 def get_order_by_id(
-    order_id: int, order_repository: order.OrderRepository, superuser: deps.SuperUser
+    order_id: int,
+    order_repository: repo.OrderRepositoryDependency,
+    superuser: deps.SuperUser,
 ):
     order = order_repository.get_order_by_id(order_id)
 
     if order is None:
         raise HTTPException(status_code=404)
+
+
+@router.post("/order")
+def create_order(
+    order: CreateOrder, user_id: int, order_repository: repo.OrderRepositoryDependency
+):
+    order_repository.create_order(order, user_id)

@@ -1,9 +1,10 @@
 from sqlalchemy import select
-from pocketpizza import model, schemas, database
+from pocketpizza import model, schemas
+from pocketpizza.dependencies import db
 
 
 class OrderRepository:
-    def __init__(self, session: database.DatabaseSession):
+    def __init__(self, session: db.DatabaseSession):
         self._session = session
 
     def get_orders(self, user_id: int | None):
@@ -40,3 +41,11 @@ class OrderRepository:
             if order
             else None
         )
+
+    def create_order(self, order: schemas.CreateOrder, user_id: int):
+        pizzas = self._session.scalars(
+            select(model.Pizza).where(model.Pizza.pizza_id.in_(order.pizza_ids))
+        ).all()
+        new_order = model.Order(pizzas=pizzas, user_id=user_id)
+        self._session.add(new_order)
+        self._session.commit()

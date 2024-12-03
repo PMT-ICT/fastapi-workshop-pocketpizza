@@ -17,15 +17,12 @@ class Pizza(PizzaBase):
     id: int
 
 
-class OrderBase(BaseModel):
-    order_id: int
-
-
-class CreateOrder(OrderBase):
+class CreateOrder(BaseModel):
     pizza_ids: list[int]
 
 
-class Order(OrderBase):
+class Order(BaseModel):
+    order_id: int
     pizzas: list[Pizza]
 
 
