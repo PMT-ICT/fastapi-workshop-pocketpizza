@@ -22,6 +22,7 @@ class CreateOrder(BaseModel):
 
 
 class Order(BaseModel):
+    user_id: int
     order_id: int
     pizzas: list[Pizza]
 

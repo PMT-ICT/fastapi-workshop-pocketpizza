@@ -18,6 +18,7 @@ class OrderRepository:
         return [
             schemas.Order(
                 order_id=order.order_id,
+                user_id=order.user_id,
                 pizzas=[
                     schemas.Pizza(name=pizza.name, id=pizza.pizza_id)
                     for pizza in order.pizzas
@@ -33,6 +34,7 @@ class OrderRepository:
         return (
             schemas.Order(
                 order_id=order.order_id,
+                user_id=order.user_id,
                 pizzas=[
                     schemas.Pizza(name=pizza.name, id=pizza.pizza_id)
                     for pizza in order.pizzas
