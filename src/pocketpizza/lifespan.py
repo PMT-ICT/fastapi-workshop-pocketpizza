@@ -27,7 +27,7 @@ def seed_db():
         ):
             user_repository.create_user(f"{user_name}@pocketpizza.com", "swordfish")
 
-        user_repository.create_user("superuser@pocketpizza.com", "shoarmapizza")
+        user_repository.create_user("superuser@pocketpizza.com", "opensesame")
 
         users = session.scalars(
             select(User).where(User.email.not_like(settings.super_user_email))

@@ -1,3 +1,4 @@
+from pydantic import ValidationError
 from sqlalchemy import select
 from pocketpizza import model, schemas
 from pocketpizza.dependencies import db
@@ -44,10 +45,19 @@ class OrderRepository:
             else None
         )
 
-    def create_order(self, order: schemas.CreateOrder, user_id: int):
+    def create_order(self, order: schemas.CreateOrder):
         pizzas = self._session.scalars(
             select(model.Pizza).where(model.Pizza.pizza_id.in_(order.pizza_ids))
         ).all()
-        new_order = model.Order(pizzas=pizzas, user_id=user_id)
+        new_order = model.Order(pizzas=pizzas, user_id=order.user_id)
         self._session.add(new_order)
         self._session.commit()
+
+        return schemas.Order(
+            user_id=new_order.user_id,
+            order_id=new_order.order_id,
+            pizzas=[
+                schemas.Pizza(name=pizza.name, id=pizza.pizza_id)
+                for pizza in new_order.pizzas
+            ],
+        )

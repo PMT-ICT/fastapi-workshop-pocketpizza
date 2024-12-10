@@ -19,6 +19,7 @@ class Pizza(PizzaBase):
 
 class CreateOrder(BaseModel):
     pizza_ids: list[int]
+    user_id: int
 
 
 class Order(BaseModel):

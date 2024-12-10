@@ -4,13 +4,12 @@ from fastapi.security import OAuth2PasswordBearer
 
 from pocketpizza import model, security, settings
 from pocketpizza.repositories import user as u
-from pocketpizza.dependencies import repository as repo
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login/access-token")
 
 
 def get_current_user(
-    user_repository: repo.UserRepositoryDependency,
+    user_repository: Annotated[u.UserRepository, Depends(u.UserRepository)],
     token: str = Depends(reusable_oauth2),
 ):
     user_id = security.get_user_id_from_token(token)

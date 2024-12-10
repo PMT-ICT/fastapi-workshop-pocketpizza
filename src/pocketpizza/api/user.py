@@ -1,15 +1,18 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from pocketpizza import schemas, security
-from pocketpizza.dependencies import repository as repo
+from pocketpizza.repositories import user
 
 router = APIRouter(tags=["user"])
+
+UserRepositoryDependency = Annotated[user.UserRepository, Depends(user.UserRepository)]
 
 
 @router.post("/login/access-token", response_model=schemas.Token)
 def login_access_token(
-    user_repository: repo.UserRepositoryDependency,
+    user_repository: UserRepositoryDependency,
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """
